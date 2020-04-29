@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Gallery</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+
+    <string name="rationale_storage">This app needs access to your storage so you can view pictures.</string>
+    <string name="returned_from_app_settings_to_activity">
+        Returned from app settings to MainActivity with the following permissions:
+        \n\Read Storage: %s
+    </string>
 </resources>
