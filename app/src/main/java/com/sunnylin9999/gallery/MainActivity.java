@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.sunnylin9999.gallery.model.PhotoItem;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,6 +130,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 PhotoItem item = photoItems.get(position);
                 Toast.makeText(MainActivity.this, "Name: \"" + item.getPhotoName() + "\"" +
                         ", \n\nLocation: \"" + item.getPhotoPath() + "\"" , Toast.LENGTH_SHORT).show();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("imageUri", String.valueOf(Uri.fromFile(new File(item.getPhotoPath()))));
+                Intent intent = new Intent(MainActivity.this, PhotoViewActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
