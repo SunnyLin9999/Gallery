@@ -4,13 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.sunnylin9999.gallery.model.PhotoItem;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -25,12 +32,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final int RC_STORAGE_PERM = 1000;
 
     private GridView gridView;
-    private int[] imageList = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
-                               R.drawable.ic_launcher_background, R.drawable.ic_launcher_background, R.drawable.ic_launcher_background,
-                               R.drawable.ic_launcher_background, R.drawable.ic_launcher_background, R.drawable.ic_launcher_background};
-    private String[] titleList = {"title-1", "title-2", "title-3",
-                                  "title-4", "title-5", "title-6",
-                                  "title-7", "title-8", "title-9"};
+    private static ContentResolver mContRes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         setContentView(R.layout.activity_main);
 
         gridView = (GridView) findViewById(R.id.gridview);
+        mContRes = getContentResolver();
+
     }
 
     private boolean hasStoragePermission() {
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     .show();
         }
     }
-	
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -113,13 +118,55 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void showPhotos() {
-        GridAdapter adapter = new GridAdapter(MainActivity.this, imageList, titleList);
+        final List<PhotoItem> photoItems = getAllPhotos();
+
+        GridAdapter adapter = new GridAdapter(MainActivity.this, photoItems);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "click" + titleList[position], Toast.LENGTH_SHORT).show();
+                PhotoItem item = photoItems.get(position);
+                Toast.makeText(MainActivity.this, "Name: \"" + item.getPhotoName() + "\"" +
+                        ", \n\nLocation: \"" + item.getPhotoPath() + "\"" , Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private List<PhotoItem> getAllPhotos() {
+        String[] projection = new String[] {
+                        MediaStore.Images.ImageColumns._ID,
+                        MediaStore.Images.ImageColumns.DISPLAY_NAME,
+                        MediaStore.Images.ImageColumns.DATA,
+                        MediaStore.Images.ImageColumns.DATE_ADDED
+                };
+
+        Cursor cursor = mContRes.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                null,
+                null,
+                MediaStore.Images.ImageColumns.DATE_MODIFIED + "  desc");
+
+        List<PhotoItem> photoItems= new ArrayList<>();
+        String photoId;
+        String photoName;
+        String photoPath;
+        String photoDateAdded;
+
+        while (cursor.moveToNext()) {
+            photoId = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
+            photoName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+            photoPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
+            photoDateAdded = cursor.getString((cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED)));
+
+            Log.d(TAG, photoId + ", " + photoName + ", " + photoPath);
+            PhotoItem photoItem = new PhotoItem(photoId, photoPath, photoName, photoDateAdded);
+
+            photoItems.add((photoItem));
+        }
+        cursor.close();
+        cursor = null;
+
+        return photoItems;
     }
 }
