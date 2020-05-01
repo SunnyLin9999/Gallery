@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         super.onResume();
 
         if(hasStoragePermission()) {
-            Toast.makeText(this, "TODO: Read Storage things", Toast.LENGTH_LONG).show();
+            //Read Storage things
             showPhotos();
         } else {
             //Ask for one permission
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             Log.d(TAG, photoId + ", " + photoName + ", " + photoPath);
             PhotoItem photoItem = new PhotoItem(photoId, photoPath, photoName, photoDateAdded);
 
-            photoItems.add((photoItem));
+            photoItems.add(photoItem);
         }
         cursor.close();
         cursor = null;

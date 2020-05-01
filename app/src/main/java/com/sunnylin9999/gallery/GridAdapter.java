@@ -21,6 +21,8 @@ import java.util.List;
 public class GridAdapter extends BaseAdapter {
     private final String TAG = "GridAdapter";
     private Context context;
+    private LayoutInflater layoutInflater;
+
     private List<PhotoItem> photoItems;
 
     public GridAdapter(Context context, List<PhotoItem> photoItems) {
@@ -48,27 +50,24 @@ public class GridAdapter extends BaseAdapter {
         View grid;
         ImageView imageView;
         TextView textview;
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        if (convertView == null) {
-            grid = layoutInflater.inflate(R.layout.gridview_item, null);
+        grid = layoutInflater.inflate(R.layout.gridview_item, null);
 
-            imageView = (ImageView) grid.findViewById(R.id.grid_image);
-            textview = (TextView) grid.findViewById((R.id.grid_text));
+        imageView = (ImageView) grid.findViewById(R.id.grid_image);
+        textview = (TextView) grid.findViewById((R.id.grid_text));
 
-            try {
-                Uri path = Uri.fromFile(new File(photoItems.get(position).getPhotoPath()));
-                Bitmap bmp = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(path));
-                imageView.setImageBitmap(bmp);
-                textview.setText(photoItems.get(position).getPhotoName());
+        PhotoItem item = photoItems.get(position);
+        Uri path = Uri.fromFile(new File(item.getPhotoPath()));
 
-//                Log.d(TAG, "GridAdapter: " + position + ", " + photoItems.get(position).getPhotoName());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            grid = (View) convertView;
+        try {
+            Bitmap bmp = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(path));
+            imageView.setImageBitmap(bmp);
+            textview.setText(item.getPhotoName());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+
         return grid;
     }
 }
