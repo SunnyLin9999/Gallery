@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         MediaStore.Images.ImageColumns._ID,
                         MediaStore.Images.ImageColumns.DISPLAY_NAME,
                         MediaStore.Images.ImageColumns.DATA,
-                        MediaStore.Images.ImageColumns.DATE_ADDED
+                        MediaStore.Images.ImageColumns.DATE_ADDED,
                 };
 
         Cursor cursor = mContRes.query(
@@ -165,11 +165,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             photoId = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
             photoName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
             photoPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
-            photoDateAdded = cursor.getString((cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED)));
+            photoDateAdded = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED));
+            Log.d(TAG, photoId + ", " + photoName + ", " + photoPath + ", " + photoPath);
 
-            Log.d(TAG, photoId + ", " + photoName + ", " + photoPath);
             PhotoItem photoItem = new PhotoItem(photoId, photoPath, photoName, photoDateAdded);
-
             photoItems.add(photoItem);
         }
         cursor.close();

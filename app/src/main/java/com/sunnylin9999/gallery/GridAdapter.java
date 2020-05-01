@@ -2,9 +2,7 @@ package com.sunnylin9999.gallery;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +12,6 @@ import android.widget.TextView;
 
 import com.sunnylin9999.gallery.model.PhotoItem;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 public class GridAdapter extends BaseAdapter {
@@ -50,6 +46,7 @@ public class GridAdapter extends BaseAdapter {
         View grid;
         ImageView imageView;
         TextView textview;
+
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         grid = layoutInflater.inflate(R.layout.gridview_item, null);
@@ -58,15 +55,14 @@ public class GridAdapter extends BaseAdapter {
         textview = (TextView) grid.findViewById((R.id.grid_text));
 
         PhotoItem item = photoItems.get(position);
-        Uri path = Uri.fromFile(new File(item.getPhotoPath()));
 
-        try {
-            Bitmap bmp = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(path));
-            imageView.setImageBitmap(bmp);
-            textview.setText(item.getPhotoName());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        Bitmap bmp = MediaStore.Images.Thumbnails.getThumbnail(
+                context.getContentResolver(),
+                Integer.valueOf(item.getPhotoId()),
+                MediaStore.Images.Thumbnails.MICRO_KIND,
+                null);
+        imageView.setImageBitmap(bmp);
+        textview.setText(item.getPhotoName());
 
         return grid;
     }
