@@ -47,9 +47,14 @@ public class GridAdapter extends BaseAdapter {
         ImageView imageView;
         TextView textview;
 
-        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if(convertView == null) {
+            layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        grid = layoutInflater.inflate(R.layout.gridview_item, null);
+            grid = layoutInflater.inflate(R.layout.gridview_item, null);
+
+        } else {
+            grid = (View) convertView;
+        }
 
         imageView = (ImageView) grid.findViewById(R.id.grid_image);
         textview = (TextView) grid.findViewById((R.id.grid_text));
