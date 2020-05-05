@@ -2,24 +2,20 @@ package com.sunnylin9999.gallery;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
-import com.sunnylin9999.gallery.model.PhotoItem;
-
-import java.io.File;
-import java.util.ArrayList;
+import com.google.android.material.navigation.NavigationView;
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -28,23 +24,34 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private String TAG = "MainActivity";
 
-    private static final String[] READ_STORGE =
-            {Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final String[] READ_STORGE = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private static final int RC_STORAGE_PERM = 1000;
 
-    private GridView gridView;
-    private static ContentResolver mContRes;
-
+    private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+        		R.id.nav_home, R.id.nav_gallery)
+                .setDrawerLayout(drawer)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+    }
 
-        gridView = (GridView) findViewById(R.id.gridview);
-        mContRes = getContentResolver();
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 
     private boolean hasStoragePermission() {
@@ -65,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
 
         if (requestCode == RC_STORAGE_PERM) {
-            showPhotos();
+
         }
 
     }
@@ -106,8 +113,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         super.onResume();
 
         if(hasStoragePermission()) {
-            //Read Storage things
-            showPhotos();
+
         } else {
             //Ask for one permission
             EasyPermissions.requestPermissions(
@@ -119,61 +125,4 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         }
     }
 
-    private void showPhotos() {
-        final List<PhotoItem> photoItems = getAllPhotos();
-
-        GridAdapter adapter = new GridAdapter(MainActivity.this, photoItems);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PhotoItem item = photoItems.get(position);
-                Toast.makeText(MainActivity.this, "Name: \"" + item.getPhotoName() + "\"" +
-                        ", \n\nLocation: \"" + item.getPhotoPath() + "\"" , Toast.LENGTH_SHORT).show();
-
-                Bundle bundle = new Bundle();
-                bundle.putString("imageUri", String.valueOf(Uri.fromFile(new File(item.getPhotoPath()))));
-                Intent intent = new Intent(MainActivity.this, PhotoViewActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private List<PhotoItem> getAllPhotos() {
-        String[] projection = new String[] {
-                        MediaStore.Images.ImageColumns._ID,
-                        MediaStore.Images.ImageColumns.DISPLAY_NAME,
-                        MediaStore.Images.ImageColumns.DATA,
-                        MediaStore.Images.ImageColumns.DATE_ADDED,
-                };
-
-        Cursor cursor = mContRes.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                MediaStore.Images.ImageColumns.DATE_MODIFIED + "  desc");
-
-        List<PhotoItem> photoItems= new ArrayList<>();
-        String photoId;
-        String photoName;
-        String photoPath;
-        String photoDateAdded;
-
-        while (cursor.moveToNext()) {
-            photoId = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
-            photoName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-            photoPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
-            photoDateAdded = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED));
-            Log.d(TAG, photoId + ", " + photoName + ", " + photoPath + ", " + photoPath);
-
-            PhotoItem photoItem = new PhotoItem(photoId, photoPath, photoName, photoDateAdded);
-            photoItems.add(photoItem);
-        }
-        cursor.close();
-        cursor = null;
-
-        return photoItems;
-    }
 }

@@ -8,4 +8,10 @@
         Returned from app settings to MainActivity with the following permissions:
         \n\Read Storage: %s
     </string>
+    
+    <string name="nav_header_title">Sunny Lin 9999</string>
+    <string name="nav_header_subtitle">sunnylin9999@gmail.com</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
 </resources>
