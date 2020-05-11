@@ -44,7 +44,7 @@ public class HomeViewModel extends AndroidViewModel {
                 MediaStore.Images.ImageColumns._ID,
                 MediaStore.Images.ImageColumns.DISPLAY_NAME,
                 MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.ImageColumns.DATE_ADDED,
+                MediaStore.Images.ImageColumns.DATE_ADDED
         };
 
         Cursor cursor = contentResolver.query(

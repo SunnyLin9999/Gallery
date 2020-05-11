@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
                                 ", \n\nLocation: \"" + item.getPhotoPath() + "\"" , Toast.LENGTH_SHORT).show();
 
                         Bundle bundle = new Bundle();
-                        bundle.putString("imageUri", String.valueOf(Uri.fromFile(new File(item.getPhotoPath()))));
+                        bundle.putString("imageUri", item.getPhotoPath());
                         Intent intent = new Intent(context, PhotoViewActivity.class);
                         intent.putExtras(bundle);
                         startActivity(intent);

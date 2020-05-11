@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 public class PhotoViewActivity extends AppCompatActivity {
@@ -30,7 +31,9 @@ public class PhotoViewActivity extends AppCompatActivity {
         mContext = this;
 
         Bundle bundle = getIntent().getExtras();
-        Uri imageUri = Uri.parse(bundle.getString("imageUri"));
+        String path = bundle.getString("imageUri");
+        Uri imageUri = Uri.fromFile(new File(path));
+        Log.d(TAG, String.valueOf(imageUri));
 
         mPhotoView = (ImageView) findViewById(R.id.photoView);
         try {
