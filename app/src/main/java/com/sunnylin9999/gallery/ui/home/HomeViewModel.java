@@ -19,7 +19,7 @@ public class HomeViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
 
-    private MutableLiveData<List<PhotoInfo>> mPhotoItems;
+    private MutableLiveData<List<PhotoInfo>> mPhotoInfos;
 
     public HomeViewModel(Application application) {
         super(application);
@@ -35,11 +35,11 @@ public class HomeViewModel extends AndroidViewModel {
 
 
     public MutableLiveData<List<PhotoInfo>> loadAllPhotos() {
-        if(mPhotoItems == null) {
-            mPhotoItems = new MutableLiveData<>();
+        if(mPhotoInfos == null) {
+            mPhotoInfos = new MutableLiveData<>();
         }
 
-        List<PhotoInfo> infos = new ArrayList<>();
+        List<PhotoInfo> albumInfos = new ArrayList<>();
 
         ContentResolver contentResolver = getApplication().getContentResolver();
 
@@ -65,12 +65,12 @@ public class HomeViewModel extends AndroidViewModel {
 
             File f = new File(imageUri);
             PhotoInfo photoInfo = new PhotoInfo(id, filename, imageUri, f.getParent());
-            infos.add(photoInfo);
+            albumInfos.add(photoInfo);
         }
         cursor.close();
         cursor = null;
 
-        mPhotoItems.setValue(infos);
-        return mPhotoItems;
+        mPhotoInfos.setValue(albumInfos);
+        return mPhotoInfos;
     }
 }
