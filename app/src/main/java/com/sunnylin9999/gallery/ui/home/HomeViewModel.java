@@ -7,7 +7,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import com.sunnylin9999.gallery.model.PhotoItem;
+
+import com.sunnylin9999.gallery.model.PhotoInfo;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,7 @@ public class HomeViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mText;
 
-    private MutableLiveData<List<PhotoItem>> mPhotoItems;
+    private MutableLiveData<List<PhotoInfo>> mPhotoItems;
 
     public HomeViewModel(Application application) {
         super(application);
@@ -31,20 +34,19 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
 
-    public MutableLiveData<List<PhotoItem>> loadAllPhotos() {
+    public MutableLiveData<List<PhotoInfo>> loadAllPhotos() {
         if(mPhotoItems == null) {
             mPhotoItems = new MutableLiveData<>();
         }
 
-        List<PhotoItem> items = new ArrayList<>();
+        List<PhotoInfo> infos = new ArrayList<>();
 
         ContentResolver contentResolver = getApplication().getContentResolver();
 
         String[] projection = new String[] {
                 MediaStore.Images.ImageColumns._ID,
                 MediaStore.Images.ImageColumns.DISPLAY_NAME,
-                MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.ImageColumns.DATE_ADDED
+                MediaStore.Images.ImageColumns.DATA
         };
 
         Cursor cursor = contentResolver.query(
@@ -55,23 +57,20 @@ public class HomeViewModel extends AndroidViewModel {
                 MediaStore.Images.ImageColumns.DATE_MODIFIED + "  desc");
 
         while (cursor.moveToNext()) {
-            String photoId = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
-            String photoName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
-            String photoPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
-            String photoDateAdded = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED));
-            Log.d(TAG, photoId + ", " + photoName + ", " + photoPath + ", " + photoPath);
+            String id = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
+            String filename = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+            String imageUri = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
 
-            PhotoItem photoItem = new PhotoItem(photoId, photoPath, photoName, photoDateAdded);
-            items.add(photoItem);
+            Log.d(TAG, imageUri);
+
+            File f = new File(imageUri);
+            PhotoInfo photoInfo = new PhotoInfo(id, filename, imageUri, f.getParent());
+            infos.add(photoInfo);
         }
         cursor.close();
         cursor = null;
 
-//        for (PhotoItem item: items) {
-//            Log.i(TAG, item.getPhotoId() + ", " + item.getPhotoName());
-//        }
-
-        mPhotoItems.setValue(items);
+        mPhotoItems.setValue(infos);
         return mPhotoItems;
     }
 }

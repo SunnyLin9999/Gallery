@@ -5,34 +5,16 @@ import android.net.Uri;
 
 public class PhotoInfo {
 
-    private Bitmap image;
     private String id;
     private String filename;
     private String imageUri;
     private String parentAlbumName;
-
-    public PhotoInfo(String filename, String imageUri, String parentAlbumName) {
-        this.filename = filename;
-        this.imageUri = imageUri;
-        this.parentAlbumName = parentAlbumName;
-    }
-
-    public PhotoInfo(Bitmap image, String filename, String imageUri, String parentAlbumName) {
-        this.image = image;
-        this.filename = filename;
-        this.imageUri = imageUri;
-        this.parentAlbumName = parentAlbumName;
-    }
 
     public PhotoInfo(String id, String filename, String imageUri, String parentAlbumName) {
         this.id = id;
         this.filename = filename;
         this.imageUri = imageUri;
         this.parentAlbumName = parentAlbumName;
-    }
-
-    public Bitmap getImage() {
-        return image;
     }
 
     public String getId() {

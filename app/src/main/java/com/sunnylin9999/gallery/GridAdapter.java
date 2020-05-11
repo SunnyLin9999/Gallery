@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sunnylin9999.gallery.model.PhotoItem;
+import com.sunnylin9999.gallery.model.PhotoInfo;
 
 import java.util.List;
 
@@ -19,21 +19,21 @@ public class GridAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
 
-    private List<PhotoItem> photoItems;
+    private List<PhotoInfo> photoInfos;
 
-    public GridAdapter(Context context, List<PhotoItem> photoItems) {
+    public GridAdapter(Context context, List<PhotoInfo> photoInfoList) {
         this.context = context;
-        this.photoItems = photoItems;
+        this.photoInfos = photoInfoList;
     }
 
     @Override
     public int getCount() {
-        return photoItems.size();
+        return photoInfos.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return photoItems.get(position);
+        return photoInfos.get(position);
     }
 
     @Override
@@ -59,15 +59,15 @@ public class GridAdapter extends BaseAdapter {
         imageView = (ImageView) grid.findViewById(R.id.grid_image);
         textview = (TextView) grid.findViewById((R.id.grid_text));
 
-        PhotoItem item = photoItems.get(position);
+        PhotoInfo info = photoInfos.get(position);
 
         Bitmap bmp = MediaStore.Images.Thumbnails.getThumbnail(
                 context.getContentResolver(),
-                Integer.valueOf(item.getPhotoId()),
+                Integer.valueOf(info.getId()),
                 MediaStore.Images.Thumbnails.MICRO_KIND,
                 null);
         imageView.setImageBitmap(bmp);
-        textview.setText(item.getPhotoName());
+        textview.setText(info.getFilename());
 
         return grid;
     }

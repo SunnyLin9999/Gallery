@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,9 +22,8 @@ import android.widget.Toast;
 import com.sunnylin9999.gallery.GridAdapter;
 import com.sunnylin9999.gallery.PhotoViewActivity;
 import com.sunnylin9999.gallery.R;
-import com.sunnylin9999.gallery.model.PhotoItem;
+import com.sunnylin9999.gallery.model.PhotoInfo;
 
-import java.io.File;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -60,20 +58,20 @@ public class HomeFragment extends Fragment {
         };
         homeViewModel.getText().observe(getViewLifecycleOwner(), textObserver);
 
-        Observer<List<PhotoItem>> loadPhotosObserver = new Observer<List<PhotoItem>>() {
+        Observer<List<PhotoInfo>> loadPhotosObserver = new Observer<List<PhotoInfo>>() {
             @Override
-            public void onChanged(@Nullable final List<PhotoItem> photoItems) {
-                GridAdapter adapter = new GridAdapter(context, photoItems);
+            public void onChanged(@Nullable final List<PhotoInfo> photoInfoList) {
+                GridAdapter adapter = new GridAdapter(context, photoInfoList);
                 gridView.setAdapter(adapter);
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        PhotoItem item = photoItems.get(position);
-                        Toast.makeText(context, "Name: \"" + item.getPhotoName() + "\"" +
-                                ", \n\nLocation: \"" + item.getPhotoPath() + "\"" , Toast.LENGTH_SHORT).show();
+                        PhotoInfo info = photoInfoList.get(position);
+                        Toast.makeText(context, "Name: \"" + info.getFilename() + "\"" +
+                                ", \n\nLocation: \"" + info.getImageUri() + "\"" , Toast.LENGTH_SHORT).show();
 
                         Bundle bundle = new Bundle();
-                        bundle.putString("imageUri", item.getPhotoPath());
+                        bundle.putString("imageUri", String.valueOf(info.getImageUri()));
                         Intent intent = new Intent(context, PhotoViewActivity.class);
                         intent.putExtras(bundle);
                         startActivity(intent);

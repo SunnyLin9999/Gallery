@@ -73,7 +73,7 @@ public class GalleryAdapter extends BaseAdapter {
         imgLayoutParams.width = 550;
         imgLayoutParams.height = 550;
         imageView.setLayoutParams(imgLayoutParams);
-        Log.v(TAG, imgLayoutParams.width + ", " + imgLayoutParams.height);
+        //Log.v(TAG, imgLayoutParams.width + ", " + imgLayoutParams.height);
         imageView.setImageBitmap(bmp);
 
         textview.setTextSize(20);
