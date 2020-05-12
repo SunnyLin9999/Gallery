@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -63,8 +62,6 @@ public class GalleryViewModel extends AndroidViewModel {
             String filename = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
             String imageUri = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
 
-            Log.d(TAG, imageUri);
-
             File f = new File(imageUri);
             PhotoInfo photoInfo = new PhotoInfo(id, filename, imageUri, f.getParent());
 
@@ -74,25 +71,16 @@ public class GalleryViewModel extends AndroidViewModel {
                 AlbumInfo albumInfo = new AlbumInfo(f.getParent());
                 albumInfo.addToAlbumInfo(photoInfo, albumInfo);
                 albumInfos.add(albumInfo);
-                //Log.v(TAG, "add " + photoInfo.getFilename() + " to " + albumInfo.getAlbumName());
-
             } else {
                 for (AlbumInfo albumInfo : albumInfos) {
                     if (albumInfo.getAlbumName().equals(f.getParent())) {
                         albumInfo.addToAlbumInfo(photoInfo, albumInfo);
-                        //Log.d(TAG, "add " + photoInfo.getFilename() + " to " + albumInfo.getAlbumName());
                     }
                 }
             }
         }
         cursor.close();
         cursor = null;
-
-        for (AlbumInfo albumInfo : albumInfos) {
-            Log.e(TAG, "\nalbum info, name= " + albumInfo.getAlbumName() +
-                            ", \ncover " + albumInfo.getCoverPhotoInfoUri() +
-                            ", \nsize " + albumInfo.getPhotoInfoList().size());
-        }
 
         mAlbumInfos.setValue(albumInfos);
         return mAlbumInfos;

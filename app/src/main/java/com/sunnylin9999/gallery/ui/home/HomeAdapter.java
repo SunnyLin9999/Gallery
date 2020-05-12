@@ -1,4 +1,4 @@
-package com.sunnylin9999.gallery;
+package com.sunnylin9999.gallery.ui.home;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,18 +10,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sunnylin9999.gallery.R;
 import com.sunnylin9999.gallery.model.PhotoInfo;
 
 import java.util.List;
 
-public class GridAdapter extends BaseAdapter {
+public class HomeAdapter extends BaseAdapter {
     private final String TAG = "GridAdapter";
     private Context context;
     private LayoutInflater layoutInflater;
 
     private List<PhotoInfo> photoInfos;
 
-    public GridAdapter(Context context, List<PhotoInfo> photoInfoList) {
+    public HomeAdapter(Context context, List<PhotoInfo> photoInfoList) {
         this.context = context;
         this.photoInfos = photoInfoList;
     }

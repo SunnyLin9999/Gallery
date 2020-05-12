@@ -64,16 +64,17 @@ public class GalleryAdapter extends BaseAdapter {
 
         AlbumInfo info = albumInfoList.get(position);
 
+//        ViewGroup.LayoutParams imgLayoutParams = imageView.getLayoutParams();
+//        imgLayoutParams.width = 550;
+//        imgLayoutParams.height = 550;
+//        imageView.setLayoutParams(imgLayoutParams);
+//        //Log.v(TAG, imgLayoutParams.width + ", " + imgLayoutParams.height);
+
         Bitmap bmp = MediaStore.Images.Thumbnails.getThumbnail(
                 context.getContentResolver(),
                 Integer.valueOf(info.getPhotoInfoList().get(0).getId()),
                 MediaStore.Images.Thumbnails.MICRO_KIND,
                 null);
-        ViewGroup.LayoutParams imgLayoutParams = imageView.getLayoutParams();
-        imgLayoutParams.width = 550;
-        imgLayoutParams.height = 550;
-        imageView.setLayoutParams(imgLayoutParams);
-        //Log.v(TAG, imgLayoutParams.width + ", " + imgLayoutParams.height);
         imageView.setImageBitmap(bmp);
 
         textview.setTextSize(20);

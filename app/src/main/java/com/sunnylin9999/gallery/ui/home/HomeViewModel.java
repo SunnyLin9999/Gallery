@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
-import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -60,8 +59,6 @@ public class HomeViewModel extends AndroidViewModel {
             String id = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
             String filename = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
             String imageUri = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
-
-            Log.d(TAG, imageUri);
 
             File f = new File(imageUri);
             PhotoInfo photoInfo = new PhotoInfo(id, filename, imageUri, f.getParent());

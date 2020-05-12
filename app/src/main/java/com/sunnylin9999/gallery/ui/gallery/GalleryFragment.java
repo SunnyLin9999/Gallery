@@ -3,11 +3,12 @@ package com.sunnylin9999.gallery.ui.gallery;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,17 +19,23 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sunnylin9999.gallery.PhotoViewActivity;
 import com.sunnylin9999.gallery.R;
 import com.sunnylin9999.gallery.model.AlbumInfo;
+import com.sunnylin9999.gallery.ui.home.HomeFragment;
+
 import java.util.List;
 
 public class GalleryFragment extends Fragment {
-    private String TAG = "GalleryFragment";
+
+    private static String TAG = "GalleryFragment";
 
     private GalleryViewModel galleryViewModel;
 
     private Context context;
+
+    private TextView textView;
+
+    private GridView gridView;
 
     public static GalleryFragment newInstance() {
         return new GalleryFragment();
@@ -38,11 +45,15 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
-        final GridView gridView = root.findViewById(R.id.grid_gallery);
-
+        textView = root.findViewById(R.id.text_gallery);
+        gridView = root.findViewById(R.id.grid_gallery);
         context = getActivity();
+        return root;
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         galleryViewModel = ViewModelProviders.of(this).get(GalleryViewModel.class);
 
         Observer<String> textObserver = new Observer<String>() {
@@ -65,29 +76,27 @@ public class GalleryFragment extends Fragment {
                         AlbumInfo info = albumInfos.get(position);
                         String[] splitAlbumUri = info.getAlbumName().split("/");
                         String albumName = splitAlbumUri[splitAlbumUri.length-1];
+                        Log.d(TAG, "Album: " + albumName + ", Location: " + info.getAlbumName());
+                        Toast.makeText(context, "Album: \"" + albumName + "\"", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(context, "Album: \"" + albumName + "\"" +
-                                ", \n\nLocation: \"" + info.getAlbumName() + "\"" , Toast.LENGTH_SHORT).show();
-
-                        Bundle bundle = new Bundle();
-                        bundle.putString("imageUri", String.valueOf(info.getCoverPhotoInfoUri()));
-                        Intent intent = new Intent(context, PhotoViewActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        navigateToHomeWithAlbumInfo(info);
                     }
                 });
             }
         };
         galleryViewModel.loadAlbumNameList().observe(getViewLifecycleOwner(), albumUriListObserver);
-
-        return root;
-
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // TODO: Use the ViewModel
-    }
+    public void navigateToHomeWithAlbumInfo(AlbumInfo albumInfo) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("album_info", albumInfo);
 
+        HomeFragment homeFragment = HomeFragment.newInstance();
+        homeFragment.setArguments(bundle);
+
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController.navigate(R.id.action_nav_gallery_to_nav_home, bundle);
+
+        Log.d(TAG, "Navigate action by album name: " + albumInfo.getAlbumName());
+    }
 }
