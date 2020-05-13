@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.sunnylin9999.gallery.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/menu_drawer_home"
         tools:layout="@layout/fragment_home">
 <!--        <argument-->
 <!--            android:name="album_info"-->
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/nav_gallery"
         android:name="com.sunnylin9999.gallery.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/menu_drawer_gallery"
         tools:layout="@layout/fragment_gallery">
         <action
             android:id="@+id/action_nav_gallery_to_nav_home"

@@ -32,4 +32,6 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'androidx.navigation:navigation-fragment:2.2.0'
     implementation 'androidx.navigation:navigation-ui:2.2.2'
+
+    implementation 'com.facebook.android:facebook-share:[5,6)'
 }

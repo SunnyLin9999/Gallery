@@ -1,5 +1,6 @@
 package com.sunnylin9999.gallery;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,8 +11,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.sunnylin9999.gallery.model.PhotoInfo;
 
 import java.io.File;
@@ -22,9 +29,9 @@ public class PhotoViewActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    private ActionBar mActionBar;
-
     private ImageView mPhotoView;
+
+    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +39,6 @@ public class PhotoViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo_view);
 
         mContext = this;
-
-//        Bundle bundle = getIntent().getExtras();
-//        String path = bundle.getString("imageUri");
-//        Uri imageUri = Uri.fromFile(new File(path));
-//        Log.d(TAG, String.valueOf(imageUri));
 
         Intent intent = getIntent();
         PhotoInfo photoInfo = intent.getParcelableExtra("photo info");
@@ -47,10 +49,43 @@ public class PhotoViewActivity extends AppCompatActivity {
         mPhotoView = (ImageView) findViewById(R.id.photoView);
         try {
 
-            Bitmap bmp = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(imageUri));
-            mPhotoView.setImageBitmap(bmp);
+            mBitmap = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(imageUri));
+            mPhotoView.setImageBitmap(mBitmap);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_photo_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Log.e(TAG, "item.getItemId " + item.getItemId() + ", R.menu.menu_photo_view " + R.id.share_to_fb);
+        switch(item.getItemId()) {
+            case R.id.share_to_fb:
+                sharePhotoToFacebook();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void sharePhotoToFacebook() {
+        Log.e(TAG, "sharePhotoToFacebook");
+        Bitmap image = mBitmap;
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        ShareDialog shareDialog = new ShareDialog(this);
+        shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
     }
 }

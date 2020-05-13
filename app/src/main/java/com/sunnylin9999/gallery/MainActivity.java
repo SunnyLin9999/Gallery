@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -24,9 +25,12 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private String TAG = "MainActivity";
 
-    private static final String[] READ_STORGE = {Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final String[] READ_STORAGE_AND_INTERNET =
+                   {Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.INTERNET};
 
-    private static final int RC_STORAGE_PERM = 1000;
+    private static final int RC_STORAGE_AND_INTERNET = 1001;
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -45,6 +49,18 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        if(hasStorageAndInternetPermission()) {
+            Toast.makeText(this, "TODO: Storage and Internet things", Toast.LENGTH_LONG).show();
+        } else {
+            //Ask for one permission
+            EasyPermissions.requestPermissions(
+                    this,
+                    getString(R.string.rationale_storage),
+                    RC_STORAGE_AND_INTERNET,
+                    READ_STORAGE_AND_INTERNET
+            );
+        }
     }
 
     @Override
@@ -56,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private boolean hasStoragePermission() {
         return EasyPermissions.hasPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    private boolean hasStorageAndInternetPermission() {
+        return EasyPermissions.hasPermissions(this, READ_STORAGE_AND_INTERNET);
     }
 
     @Override
@@ -71,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         // Some permissions have been granted
         Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
 
-        if (requestCode == RC_STORAGE_PERM) {
+        if (requestCode == RC_STORAGE_AND_INTERNET) {
 
         }
 
@@ -112,15 +132,15 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     protected void onResume() {
         super.onResume();
 
-        if(hasStoragePermission()) {
-
+        if(hasStorageAndInternetPermission()) {
+            Toast.makeText(this, "TODO: Storage and Internet things", Toast.LENGTH_LONG).show();
         } else {
             //Ask for one permission
             EasyPermissions.requestPermissions(
                     this,
                     getString(R.string.rationale_storage),
-                    RC_STORAGE_PERM,
-                    READ_STORGE
+                    RC_STORAGE_AND_INTERNET,
+                    READ_STORAGE_AND_INTERNET
             );
         }
     }
