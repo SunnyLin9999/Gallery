@@ -10,9 +10,12 @@
         android:name="com.sunnylin9999.gallery.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
+<!--        <argument-->
+<!--            android:name="album_info"-->
+<!--            app:argType="com.sunnylin9999.gallery.model.AlbumInfo" />-->
         <argument
-            android:name="album_info"
-            app:argType="com.sunnylin9999.gallery.model.AlbumInfo" />
+            android:name="album_name_path"
+            app:argType="string" />
     </fragment>
 
     <fragment

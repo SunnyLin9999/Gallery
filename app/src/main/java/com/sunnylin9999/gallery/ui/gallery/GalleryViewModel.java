@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -69,14 +70,9 @@ public class GalleryViewModel extends AndroidViewModel {
                 albumUriList.add(f.getParent());
 
                 AlbumInfo albumInfo = new AlbumInfo(f.getParent());
-                albumInfo.addToAlbumInfo(photoInfo, albumInfo);
+                albumInfo.addToAlbumInfo(photoInfo, albumInfo); //first photo
                 albumInfos.add(albumInfo);
-            } else {
-                for (AlbumInfo albumInfo : albumInfos) {
-                    if (albumInfo.getAlbumName().equals(f.getParent())) {
-                        albumInfo.addToAlbumInfo(photoInfo, albumInfo);
-                    }
-                }
+                Log.e(TAG, "album name=" + f.getParent() + ", size= " + albumUriList.size());
             }
         }
         cursor.close();

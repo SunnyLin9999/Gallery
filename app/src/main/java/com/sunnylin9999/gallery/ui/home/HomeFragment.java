@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.sunnylin9999.gallery.PhotoViewActivity;
 import com.sunnylin9999.gallery.R;
-import com.sunnylin9999.gallery.model.AlbumInfo;
 import com.sunnylin9999.gallery.model.PhotoInfo;
 
 import java.util.List;
@@ -36,8 +35,6 @@ public class HomeFragment extends Fragment {
     private TextView textView;
 
     private GridView gridView;
-
-    private List<PhotoInfo> mPhotoInfoList;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -67,21 +64,24 @@ public class HomeFragment extends Fragment {
         homeViewModel.getText().observe(getViewLifecycleOwner(), textObserver);
 
         Bundle bundle = getArguments();
-        AlbumInfo info = bundle.getParcelable("album_info");
-        if(info != null) {
+//        AlbumInfo info = bundle.getParcelable("album_info");
+        String albumName = bundle.getString("album_name_path");
+        Log.d(TAG, "album= " + albumName);
+        if(albumName != null) {
             //showed by album name, from gallery
-            mPhotoInfoList = info.getPhotoInfoList();
-            Log.d(TAG, "Gallery->Home, PhotoInfo List size= " + mPhotoInfoList.size() +
-                    ", Album name= " + info.getAlbumName());
-            updateHomeAdapter(mPhotoInfoList);
-
+            Observer<List<PhotoInfo>> loadAlbumObserver = new Observer<List<PhotoInfo>>() {
+                @Override
+                public void onChanged(@Nullable final List<PhotoInfo> photoInfoList) {
+                    updateHomeAdapter(photoInfoList);
+                }
+            };
+            homeViewModel.loadAlbumPhotos(albumName).observe(getViewLifecycleOwner(), loadAlbumObserver);
         } else {
             //showed by all photos, default
             Observer<List<PhotoInfo>> loadPhotosObserver = new Observer<List<PhotoInfo>>() {
                 @Override
                 public void onChanged(@Nullable final List<PhotoInfo> photoInfoList) {
-                    mPhotoInfoList = photoInfoList;
-                    updateHomeAdapter(mPhotoInfoList);
+                    updateHomeAdapter(photoInfoList);
                 }
             };
             homeViewModel.loadAllPhotos().observe(getViewLifecycleOwner(), loadPhotosObserver);

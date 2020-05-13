@@ -17,7 +17,9 @@ import java.util.List;
 
 public class HomeAdapter extends BaseAdapter {
     private final String TAG = "GridAdapter";
+
     private Context context;
+
     private LayoutInflater layoutInflater;
 
     private List<PhotoInfo> photoInfos;

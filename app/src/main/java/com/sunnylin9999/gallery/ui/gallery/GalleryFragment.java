@@ -79,7 +79,7 @@ public class GalleryFragment extends Fragment {
                         Log.d(TAG, "Album: " + albumName + ", Location: " + info.getAlbumName());
                         Toast.makeText(context, "Album: \"" + albumName + "\"", Toast.LENGTH_SHORT).show();
 
-                        navigateToHomeWithAlbumInfo(info);
+                        navigateToHomeWithAlbumInfo(info.getAlbumName());
                     }
                 });
             }
@@ -87,9 +87,10 @@ public class GalleryFragment extends Fragment {
         galleryViewModel.loadAlbumNameList().observe(getViewLifecycleOwner(), albumUriListObserver);
     }
 
-    public void navigateToHomeWithAlbumInfo(AlbumInfo albumInfo) {
+    public void navigateToHomeWithAlbumInfo(String albumName) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("album_info", albumInfo);
+//        bundle.putParcelable("album_info", albumInfo);
+        bundle.putString("album_name_path", albumName);
 
         HomeFragment homeFragment = HomeFragment.newInstance();
         homeFragment.setArguments(bundle);
@@ -97,6 +98,6 @@ public class GalleryFragment extends Fragment {
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         navController.navigate(R.id.action_nav_gallery_to_nav_home, bundle);
 
-        Log.d(TAG, "Navigate action by album name: " + albumInfo.getAlbumName());
+        Log.d(TAG, "Navigate action by album name: " + albumName);
     }
 }

@@ -18,7 +18,9 @@ import java.util.List;
 
 public class GalleryAdapter extends BaseAdapter {
     private final String TAG = "GalleryAdapter";
+
     private Context context;
+
     private LayoutInflater layoutInflater;
 
     private List<AlbumInfo> albumInfoList;
@@ -63,12 +65,6 @@ public class GalleryAdapter extends BaseAdapter {
         textview = (TextView) grid.findViewById((R.id.grid_text));
 
         AlbumInfo info = albumInfoList.get(position);
-
-//        ViewGroup.LayoutParams imgLayoutParams = imageView.getLayoutParams();
-//        imgLayoutParams.width = 550;
-//        imgLayoutParams.height = 550;
-//        imageView.setLayoutParams(imgLayoutParams);
-//        //Log.v(TAG, imgLayoutParams.width + ", " + imgLayoutParams.height);
 
         Bitmap bmp = MediaStore.Images.Thumbnails.getThumbnail(
                 context.getContentResolver(),
